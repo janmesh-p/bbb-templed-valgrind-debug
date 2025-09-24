@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS= -std=gnu11 -g -O0 -Wall -Wextra -pthread -Iinclude
 
 SRC = $(wildcard src/*.c)
-OBJ = $(SRC:.c=.o)
+OBJ = $(filter-out src/test_runner.o,$(SRC:.c=.o))
 
 TARGET = bbbdebug
 TEST_TARGET=test_runner
