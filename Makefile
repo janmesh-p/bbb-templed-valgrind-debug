@@ -5,6 +5,7 @@ SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
 TARGET = bbbdebug
+TEST_TARGET=test_runner
 
 all: $(TARGET)
 
@@ -14,10 +15,13 @@ $(TARGET): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+test: src/test_runner.o $(filter-out src/main.o, $(OBJ))
+	$(CC) $(CFLAGS) -o $(TEST_TARGET) $^
+	@echo "=== Running tests under VALGRIND==="
+	valgrind --leak-check=full --show-leak-kinds=all ./$(TEST_TARGET)
+
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET) $(TEST_TARGET) src/test_runner.o
 
-.PHONY: test
+.PHONY: all clean test
 
-test:
-	@echo "Hello world! Individual targets will be defined here"
