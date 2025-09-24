@@ -1,0 +1,44 @@
+name: C Project CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential valgrind
+
+    - name: Build & run tests (captures output)
+      run: |
+        mkdir -p artifacts
+        # run the test target (which builds + runs tests/valgrind). Capture output to a file.
+        # We still continue on error so we can upload the log below.
+        make test > artifacts/make_test.log 2>&1 || true
+        # save the exit code for decision step
+        echo $? > artifacts/make_exitcode
+        # show last 200 lines in logs for quick debugging
+        tail -n 200 artifacts/make_test.log || true
+
+    - name: Upload test log artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: valgrind-and-test-log
+        path: artifacts/make_test.log
+
+    - name: Fail if tests/valgrind failed
+      run: |
+        code=$(cat artifacts/make_exitcode)
+        if [ "$code" -ne 0 ]; then
+          echo "Tests or Valgrind detected problems (exit code $code). See the uploaded artifact 'valgrind-and-test-log'."
+          exit $code
+        fi
