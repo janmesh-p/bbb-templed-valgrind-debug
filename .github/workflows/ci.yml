@@ -30,7 +30,7 @@ jobs:
         tail -n 200 artifacts/make_test.log || true
 
     - name: Upload test log artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: valgrind-and-test-log
         path: artifacts/make_test.log
