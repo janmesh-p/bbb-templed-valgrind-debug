@@ -2,6 +2,7 @@
 #include "pwm.h"
 #include <unistd.h>
 #include <stdio.h>
+#include "signal_thread.h"
 
 void led_controller_init(led_controller_t *ctrl, float *temperature) {
     pthread_mutex_init(&ctrl->lock, NULL);
@@ -13,7 +14,7 @@ void led_controller_init(led_controller_t *ctrl, float *temperature) {
 }
 
 void led_controller_loop(led_controller_t *ctrl) {
-    while (1) {
+    while (!stop_flag){
         pthread_mutex_lock(&ctrl->lock);
 
         state_update(&ctrl->sm, *ctrl->current_temp);
@@ -31,6 +32,6 @@ void led_controller_loop(led_controller_t *ctrl) {
         }
 
         pthread_mutex_unlock(&ctrl->lock);
-        usleep(500000); // 0.5s per loop
+        usleep(1000000); // 0.5s per loop
     }
 }

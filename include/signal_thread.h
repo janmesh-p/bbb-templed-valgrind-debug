@@ -9,7 +9,7 @@ typedef struct {
     sigset_t *set;
     led_controller_t *ctrl;
 } signal_args_t;
-
+extern volatile sig_atomic_t stop_flag; 
 void *signal_thread(void *arg);
 
 #endif

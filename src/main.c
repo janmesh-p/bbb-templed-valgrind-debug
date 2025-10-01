@@ -3,7 +3,15 @@
 #include <signal.h>
 #include "led_controller.h"
 #include "temp_sim.h"
-#include "signal_thread.h"  // minimal example
+#include "signal_thread.h"
+
+volatile sig_atomic_t stop_flag = 0;
+pthread_t sig_tid;
+
+void handle_signal(int sig) {
+    stop_flag = 1;
+    pthread_kill(sig_tid, SIGUSR2);
+}
 
 int main(void) {
     printf("=== LED Controller with Temp & Signal Thread ===\n");
@@ -12,7 +20,12 @@ int main(void) {
     sigset_t set;
     sigemptyset(&set);
     sigaddset(&set, SIGUSR1);
+    sigaddset(&set, SIGUSR2);
     pthread_sigmask(SIG_BLOCK, &set, NULL);
+
+    // Set up signal handlers
+    signal(SIGINT, handle_signal);
+    signal(SIGTERM, handle_signal);
 
     // Start temperature simulator
     system_state_t sys_state;
@@ -27,12 +40,16 @@ int main(void) {
     led_controller_init(&ctrl, &sys_state.temperature);
 
     // Start signal thread
-    pthread_t sig_tid;
     signal_args_t sargs = { .set = &set, .ctrl = &ctrl };
     pthread_create(&sig_tid, NULL, signal_thread, &sargs);
 
     // Start LED controller loop (main thread)
     led_controller_loop(&ctrl);
+
+    // Cleanup
+    pthread_join(temp_tid, NULL);
+    pthread_join(sig_tid, NULL);
+    pthread_mutex_destroy(&sys_state.lock);
 
     return 0;
 }
