@@ -53,7 +53,7 @@ scp bbb_debug <ip_address>@beaglebone:/home/debian/
 - Follow coding style: consistent indent, clear naming  
 - Submit PRs with tests
 
-# For Real-time Output, Check Beaglebone branch of this repo, to view source code and output video.
+### For Real-time Output, Check Beaglebone branch of this repo, to view source code and output video.
 
 ## License
 
