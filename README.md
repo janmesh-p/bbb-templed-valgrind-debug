@@ -1,4 +1,4 @@
-# BBB Templated Valgrind Debug — Templated Branch
+# BBB  Valgrind Debug — Simulation/main Branch
 
 This branch contains the clean, templated implementation for running on the BeagleBone Black (BBB) without additional instrumentation.
 
@@ -51,7 +51,9 @@ scp bbb_debug <ip_address>@beaglebone:/home/debian/
 
 - Use branches per feature  
 - Follow coding style: consistent indent, clear naming  
-- Submit PRs with tests  
+- Submit PRs with tests
+
+# For Real-time Output, Check Beaglebone branch of this repo, to view source code and output video.
 
 ## License
 
