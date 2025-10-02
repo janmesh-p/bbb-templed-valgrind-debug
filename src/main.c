@@ -5,12 +5,12 @@
 #include "temp_sim.h"
 #include "signal_thread.h"
 
-volatile sig_atomic_t stop_flag = 0;
+volatile sig_atomic_t stop_flag = 1;
 pthread_t sig_tid;
 
 void handle_signal(int sig) {
-    stop_flag = 1;
-    pthread_kill(sig_tid, SIGUSR2);
+    stop_flag = 0;
+   // pthread_kill(sig_tid, SIGUSR2);
 }
 
 int main(void) {
@@ -44,10 +44,15 @@ int main(void) {
     pthread_create(&sig_tid, NULL, signal_thread, &sargs);
 
     // Start LED controller loop (main thread)
-    led_controller_loop(&ctrl);
+    while(stop_flag){
+	led_controller_loop(&ctrl);
+    }
+    printf("Shutting down Cleanly....\n");
 
     // Cleanup
+    pthread_cancel(temp_tid);
     pthread_join(temp_tid, NULL);
+    pthread_cancel(sig_tid);
     pthread_join(sig_tid, NULL);
     pthread_mutex_destroy(&sys_state.lock);
 

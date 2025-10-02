@@ -29,7 +29,8 @@ int pwm_write(int channel, int duty_percent) {
     int period_ns = 1000000; // 1kHz
     //printf("Current duty: %d\t",duty_percent);
     if (duty_percent==50) duty_percent=100;
-    printf("[PWM_DEBUG] Writing %d%% to %s\n", duty_percent, PWM_PATHS[channel]);
+    printf("[PWM] channel %d = %d\n",channel,duty_percent);
+//  printf("[PWM_DEBUG] Writing %d%% to %s\n", duty_percent, PWM_PATHS[channel]);
  // printf("New duty: %d\n",duty_percent);
     snprintf(path, sizeof(path), "%s/period", PWM_PATHS[channel]);
     FILE *f = fopen(path, "w");
@@ -49,6 +50,6 @@ int pwm_write(int channel, int duty_percent) {
     if (!f) return -1;
     fprintf(f, "%d", (duty_percent > 0) ? 1 : 0);
     fclose(f);
-    printf("[PWM} channel %d = %d\n",channel,duty_percent);
+//    printf("[PWM] channel %d = %d\n",channel,duty_percent);
     return 0;
 }
