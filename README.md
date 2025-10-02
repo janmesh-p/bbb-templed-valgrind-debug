@@ -1,7 +1,7 @@
-# BBB Templated Valgrind Debug — Beaglebone Branch
+# BBB Valgrind Debug — Beaglebone Branch
 
 This branch contains the **real hardware implementation** of the LED PWM control system on the BeagleBone Black (BBB).  
-Unlike the `templated` branch (mock environment for testing), this branch drives actual PWM hardware pins on the BBB.
+Unlike the `main` branch (mock environment for testing), this branch drives actual PWM hardware pins on the BBB.
 
 ---
 
